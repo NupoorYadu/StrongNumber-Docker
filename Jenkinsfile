@@ -50,11 +50,7 @@ pipeline {
             steps {
                 echo '========== Stage 4: Code Coverage =========='
                 bat 'mvn jacoco:report'
-                publishHTML([
-                    reportDir: 'target/site/jacoco',
-                    reportFiles: 'index.html',
-                    reportName: 'JaCoCo Coverage Report'
-                ])
+                echo "✓ JaCoCo report generated: target/site/jacoco/index.html"
             }
         }
 
