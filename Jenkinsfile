@@ -18,7 +18,10 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo '========== Stage 1: Checkout =========='
-                checkout scm
+                checkout([$class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[url: 'https://github.com/NupoorYadu/StrongNumber-Docker.git']]
+                ])
                 bat 'git log --oneline -5'
             }
         }
