@@ -12,6 +12,8 @@ pipeline {
         DOCKER_IMAGE_TAG = '1.0.0'
         REGISTRY = 'docker.io'
         SONARQUBE_DISABLED = 'true'
+        GIT_URL = 'https://github.com/NupoorYadu/StrongNumber-Docker.git'
+        GIT_BRANCH = 'main'
     }
 
     stages {
@@ -19,21 +21,14 @@ pipeline {
             steps {
                 echo '========== Stage 1: Checkout =========='
                 script {
-                    try {
-                        checkout([$class: 'GitSCM',
-                            branches: [[name: '*/main']],
-                            extensions: [[$class: 'CloneOption', timeout: 120]],
-                            userRemoteConfigs: [[
-                                url: 'https://github.com/NupoorYadu/StrongNumber-Docker.git',
-                                credentialsId: ''
-                            ]]
-                        ])
-                    } catch (Exception e) {
-                        echo "Standard checkout failed, attempting direct git clone..."
-                        bat 'git clone --branch main https://github.com/NupoorYadu/StrongNumber-Docker.git . || true'
-                    }
+                    // Clean workspace first
+                    deleteDir()
                 }
-                bat 'git log --oneline -5 || echo "Git log failed"'
+                // Direct git clone - most reliable
+                bat """
+                    git clone --branch ${GIT_BRANCH} ${GIT_URL} .
+                    git log --oneline -5
+                """
             }
         }
 
