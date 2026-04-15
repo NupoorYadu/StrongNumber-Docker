@@ -18,11 +18,22 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo '========== Stage 1: Checkout =========='
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[url: 'https://github.com/NupoorYadu/StrongNumber-Docker.git']]
-                ])
-                bat 'git log --oneline -5'
+                script {
+                    try {
+                        checkout([$class: 'GitSCM',
+                            branches: [[name: '*/main']],
+                            extensions: [[$class: 'CloneOption', timeout: 120]],
+                            userRemoteConfigs: [[
+                                url: 'https://github.com/NupoorYadu/StrongNumber-Docker.git',
+                                credentialsId: ''
+                            ]]
+                        ])
+                    } catch (Exception e) {
+                        echo "Standard checkout failed, attempting direct git clone..."
+                        bat 'git clone --branch main https://github.com/NupoorYadu/StrongNumber-Docker.git . || true'
+                    }
+                }
+                bat 'git log --oneline -5 || echo "Git log failed"'
             }
         }
 
