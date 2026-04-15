@@ -1,0 +1,17 @@
+.git/
+target/
+*.class
+*.jar
+*.war
+*.ear
+.classpath
+.eclipse
+.project
+.settings/
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+logs/
+*.log

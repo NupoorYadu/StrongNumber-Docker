@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  strong-number-checker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: strong-number-checker:1.0.0
+    container_name: strong-number-checker
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Environment variables
+    environment:
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+    
+    # Ports (if REST API is added)
+    ports:
+      - "8080:8080"
+    
+    # Volume for logs (optional)
+    volumes:
+      - ./logs:/app/logs
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "java", "-version"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
